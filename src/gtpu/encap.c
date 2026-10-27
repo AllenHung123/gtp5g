@@ -1,4 +1,3 @@
-#include <generated/utsrelease.h>
 #include <linux/version.h>
 #include <linux/socket.h>
 #include <linux/rculist.h>
@@ -88,10 +87,7 @@ struct sock *gtp5g_encap_enable(int fd, int type, struct gtp5g_dev *gtp){
     tuncfg.encap_rcv = gtp5g_encap_recv;
     tuncfg.encap_destroy = gtp5g_encap_disable_locked;
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 1, 5) || \
-    (LINUX_VERSION_CODE == KERNEL_VERSION(7, 0, 14) && \
-     defined(UTS_UBUNTU_RELEASE_ABI) && \
-     UTS_UBUNTU_RELEASE_ABI >= 38)
+#ifdef GTP5G_UDP_TUNNEL_SOCK_SK
     setup_udp_tunnel_sock(sock_net(sock->sk), sock->sk, &tuncfg);
 #else
     setup_udp_tunnel_sock(sock_net(sock->sk), sock, &tuncfg);
